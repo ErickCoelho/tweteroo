@@ -7,14 +7,20 @@ app.use(cors());
 
 const users = [];
 //const tweets = [];
-const tweets = [
+/*const tweets = [
     { username: 'mat', tweet: 'lucaslucas', avatar: 'ewdkemwd' },
     { username: 'mat', tweet: 'lucadkojweoslucas', avatar: 'ewdkemwd' },
     { username: 'mat', tweet: 'd', avatar: 'ewdkemwd' },
     { username: 'lucas', tweet: 'de2don', avatar: 'ewdkemwd' },
     { username: 'lucas', tweet: 'matmat', avatar: 'ewdkemwd' },
     { username: 'lucas', tweet: 'matsfdkskdflmat', avatar: 'ewdkemwd' }
-];
+];*/
+
+const tweets = Array.from({ length: 23 }, (_, index) => ({
+    username: `user${index + 1}`,
+    tweet: `tweet${index + 1}`,
+    avatar: `avatar${index + 1}`
+  }));
 
 app.post('/sign-up', (req, res) => {
     if(req.body.username === "" || req.body.avatar === ""){
@@ -34,8 +40,8 @@ app.post('/tweets', (req, res) => {
         return;
     }
 
-    const postUser = users.find((users) => users.username === req.headers.User);
-    const tweet = {tweet: req.body.tweet, username: req.headers.User, avatar: postUser.avatar};
+    const postUser = users.find((user) => user.username === req.headers.user);
+    const tweet = {tweet: req.body.tweet, username: req.headers.user, avatar: postUser.avatar};
     tweets.push(tweet);
     console.log(tweets);
     res.sendStatus(201);
@@ -65,7 +71,7 @@ app.get('/tweets', (req, res) => {
     console.log(first);
     console.log(last);
 
-    res.send(tweets.slice(first,last));
+    res.send(tweets.slice(first,last).reverse());
 });
 
 app.listen(5001);
