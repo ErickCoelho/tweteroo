@@ -3,21 +3,26 @@ let _username = "";
 function signUp() {
   const username = document.querySelector("#username").value;
   const picture = document.querySelector("#picture").value;
+  alert("Entrou aqui");
 
-  axios.post("http://localhost:5000/sign-up", {
+  axios.post("http://localhost:5001/sign-up", {
     username,
     avatar: picture
   }).then(() => {
+    alert("Entrou aqui1");
     _username = username;
+    //alert("OK");
     loadTweets();
   }).catch(err => {
+    alert("Entrou aqui2");
     console.error(err);
     alert("Erro ao fazer cadastro! Consulte os logs.");
   });
 }
 
 function loadTweets() {
-  axios.get("http://localhost:5000/tweets").then(res => {
+  //alert("Entrou aqui3");
+  axios.get("http://localhost:5001/tweets").then(res => {
     const tweets = res.data;
     let tweetsHtml = '';
 
@@ -48,7 +53,7 @@ function loadTweets() {
 function postTweet() {
   const tweet = document.querySelector("#tweet").value;
 
-  axios.post("http://localhost:5000/tweets", {
+  axios.post("http://localhost:5001/tweets", {
     username: _username,
     tweet
   }).then(() => {
