@@ -6,7 +6,15 @@ app.use(json());
 app.use(cors());
 
 const users = [];
-const tweets = [];
+//const tweets = [];
+const tweets = [
+    { username: 'mat', tweet: 'lucaslucas', avatar: 'ewdkemwd' },
+    { username: 'mat', tweet: 'lucadkojweoslucas', avatar: 'ewdkemwd' },
+    { username: 'mat', tweet: 'd', avatar: 'ewdkemwd' },
+    { username: 'lucas', tweet: 'de2don', avatar: 'ewdkemwd' },
+    { username: 'lucas', tweet: 'matmat', avatar: 'ewdkemwd' },
+    { username: 'lucas', tweet: 'matsfdkskdflmat', avatar: 'ewdkemwd' }
+];
 
 app.post('/sign-up', (req, res) => {
     if(req.body.username === "" || req.body.avatar === ""){
@@ -26,17 +34,38 @@ app.post('/tweets', (req, res) => {
         return;
     }
 
-    const postUser = users.find((users) => users.username === req.body.username);
-    const tweet = {...req.body, avatar: postUser.avatar};
+    const postUser = users.find((users) => users.username === req.headers.User);
+    const tweet = {tweet: req.body.tweet, username: req.headers.User, avatar: postUser.avatar};
     tweets.push(tweet);
     console.log(tweets);
-    //res.send("OK");
     res.sendStatus(201);
 });
 
+app.get('/tweets/:username', (req, res) => {
+    const tweetsFilter = tweets.filter((tweet) => tweet.username === req.params.username);
+    console.log(tweetsFilter);
+    res.send(tweetsFilter);
+});
+
+
 app.get('/tweets', (req, res) => {
+    if(!req.query.page || parseInt(req.query.page) < 1){
+        res.status(400).send('Informe uma página válida!');
+        return;
+    }
+
     console.log(tweets);
-    res.send(tweets.slice(-10));
+
+    const currentPage = parseInt(req.query.page);
+    const pageLength = 10;
+    
+    const last = tweets.length - (currentPage-1)*pageLength < 0 ? 0 : tweets.length - (currentPage-1)*pageLength;
+    const first = last - pageLength < 0 ? 0 : last - pageLength;
+
+    console.log(first);
+    console.log(last);
+
+    res.send(tweets.slice(first,last));
 });
 
 app.listen(5001);
